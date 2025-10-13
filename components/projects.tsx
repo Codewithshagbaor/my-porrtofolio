@@ -1,67 +1,39 @@
+"use client"
+
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge"
-import { ExternalLink, Sparkles } from "lucide-react"
+import { ExternalLink, Sparkles, Github } from "lucide-react"
+import { createBrowserSupabaseClient } from "@/lib/supabase/client"
+import Link from "next/link"
+import { useEffect, useState } from "react"
 
 interface ProjectsProps {
   mode: "backend" | "web3"
 }
 
-const projects = [
-  {
-    title: "Rinnd",
-    description: "Private social platform with real-time video/audio capabilities",
-    impact: "Scaled to support 10K+ concurrent users with sub-100ms latency",
-    tech: ["Django", "PostgreSQL", "Agora SDK", "Redis", "Docker"],
-    category: "backend",
-    image: "/social-platform-dashboard.jpg",
-  },
-  {
-    title: "Telegram Wallet Bot",
-    description: "Crypto wallet integration with pay-per-deployment model",
-    impact: "Processed $500K+ in transactions with 99.9% uptime",
-    tech: ["Python", "Telegram Bot API", "CryptoBot", "PostgreSQL"],
-    category: "backend",
-    image: "/telegram-crypto-bot-interface.jpg",
-  },
-  {
-    title: "Node Uptime Checker",
-    description: "Infrastructure monitoring system for distributed nodes",
-    impact: "Monitors 200+ nodes across 15 regions with real-time alerts",
-    tech: ["Django", "Celery", "Redis", "Prometheus", "Grafana"],
-    category: "backend",
-    image: "/monitoring-dashboard.png",
-  },
-  {
-    title: "AmongFriends",
-    description: "Multichain betting dApp with provably fair outcomes",
-    impact: "Facilitated 50K+ bets across Ethereum, Polygon, and Arbitrum",
-    tech: ["Solidity", "The Graph", "Wagmi", "Next.js", "Ethers.js"],
-    category: "web3",
-    image: "/web3-betting-dapp.jpg",
-  },
-  {
-    title: "Secuda",
-    description: "Algorand hackathon-winning decentralized security platform",
-    impact: "Won 1st place at Algorand Global Hackathon 2023",
-    tech: ["Algorand", "PyTeal", "React", "AlgoSDK"],
-    category: "web3",
-    image: "/algorand-security-dapp.jpg",
-  },
-  {
-    title: "Sequence NFT Minting",
-    description: "IPFS-powered NFT minting platform with smart contracts",
-    impact: "Minted 25K+ NFTs with optimized gas costs",
-    tech: ["Solidity", "IPFS", "Hardhat", "OpenZeppelin", "React"],
-    category: "web3",
-    image: "/nft-minting-platform.jpg",
-  },
-]
 
 export function Projects({ mode }: ProjectsProps) {
-  const filteredProjects =
-    mode === "backend"
-      ? projects.filter((p) => p.category === "backend")
-      : projects.filter((p) => p.category === "web3")
+  const [projects, setProjects] = useState<any[]>([])
+  const [loading, setLoading] = useState(true)
+
+  useEffect(() => {
+    async function fetchProjects() {
+      setLoading(true)
+      const supabase = createBrowserSupabaseClient()
+
+      const { data } = await supabase
+        .from("projects")
+        .select("*")
+        .or(`category.eq.${mode},category.eq.both`)
+        .order("featured", { ascending: false })
+        .order("created_at", { ascending: false })
+
+      setProjects(data || [])
+      setLoading(false)
+    }
+
+    fetchProjects()
+  }, [mode])
 
   return (
     <section id="projects" className="relative py-32 px-6 overflow-hidden">
@@ -82,13 +54,22 @@ export function Projects({ mode }: ProjectsProps) {
           </p>
         </div>
 
+        {loading ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">Loading projects...</p>
+          </div>
+        ) : projects.length === 0 ? (
+          <div className="text-center py-12">
+            <p className="text-muted-foreground text-lg">No projects available yet.</p>
+          </div>
+        ) : (
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {filteredProjects.map((project, index) => (
-            <Card
-              key={index}
-              className="group relative glass-card hover:border-primary transition-all duration-500 hover:scale-[1.02] overflow-hidden"
+          {projects.map((project) => (
+              <Card
+              key={project.id}
+              className="group relative glass-card hover:border-primary transition-all duration-500 hover:scale-[1.02] overflow-hidden p-0 pb-3"
             >
-              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
+              <div className="absolute inset-0 bg-gradient-to-br from-primary/0 via-primary/0 to-primary/10 opacity-0 group-hover:opacity-100 transition-opacity duration-500 pointer-events-none" />
 
               <div className="relative overflow-hidden rounded-t-lg">
                 <img
@@ -96,27 +77,44 @@ export function Projects({ mode }: ProjectsProps) {
                   alt={project.title}
                   className="w-full h-56 object-cover group-hover:scale-110 transition-transform duration-700"
                 />
-                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent" />
+                <div className="absolute inset-0 bg-gradient-to-t from-card via-card/50 to-transparent pointer-events-none" />
 
                 <div className="absolute top-0 right-0 w-20 h-20 bg-gradient-to-br from-primary/30 to-transparent" />
               </div>
 
               <CardHeader>
-                <CardTitle className="flex items-center justify-between text-xl">
-                  <span className="font-bold">{project.title}</span>
-                  <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
-                </CardTitle>
-                <CardDescription className="text-base">{project.description}</CardDescription>
-              </CardHeader>
+                  <CardTitle className="flex items-center justify-between text-xl">
+                    <span className="font-bold">{project.title}</span>
+                    <div className="flex gap-2">
+                      {project.github && (
+                        <Link href={project.github} target="_blank" rel="noopener noreferrer">
+                          <Github className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                        </Link>
+                      )}
+                      {project.demo && (
+                        <Link href={project.demo} target="_blank" rel="noopener noreferrer">
+                          <ExternalLink className="h-5 w-5 text-muted-foreground group-hover:text-primary transition-colors duration-300" />
+                        </Link>
+                      )}
+                    </div>
+                  </CardTitle>
+                    <CardDescription className="text-base text-justify">{project.description}</CardDescription>
+                </CardHeader>
 
               <CardContent className="space-y-5">
-                <div className="flex items-start gap-2">
+                {project.impact && project.impact !== "" ? (
+                  <div className="flex items-start gap-2">
                   <Sparkles className="h-4 w-4 text-accent mt-0.5 flex-shrink-0" />
                   <p className="text-sm text-accent font-medium leading-relaxed">{project.impact}</p>
-                </div>
+                  </div>
+                ) : (
+                  <div className="flex items-start gap-2">
+                    <div></div>
+                  </div>
+                )}
 
                 <div className="flex flex-wrap gap-2">
-                  {project.tech.map((tech, i) => (
+                  {project.tech.map((tech: string, i: number) => (
                     <Badge
                       key={i}
                       variant="secondary"
@@ -128,8 +126,9 @@ export function Projects({ mode }: ProjectsProps) {
                 </div>
               </CardContent>
             </Card>
-          ))}
+            ))}
         </div>
+        )}
       </div>
     </section>
   )

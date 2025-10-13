@@ -2,28 +2,8 @@
 
 import { Button } from "@/components/ui/button"
 import { Database, Blocks } from "lucide-react"
-import { Canvas } from "@react-three/fiber"
-import { useRef } from "react"
-import type { Mesh } from "three"
-import { useFrame } from "@react-three/fiber"
-
-function RotatingCube({ color }: { color: string }) {
-  const meshRef = useRef<Mesh>(null)
-
-  useFrame((state, delta) => {
-    if (meshRef.current) {
-      meshRef.current.rotation.x += delta * 0.5
-      meshRef.current.rotation.y += delta * 0.3
-    }
-  })
-
-  return (
-    <mesh ref={meshRef}>
-      <boxGeometry args={[1, 1, 1]} />
-      <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
-    </mesh>
-  )
-}
+import { useEffect, useRef } from "react"
+import { gsap } from "gsap"
 
 interface ModeToggleProps {
   mode: "backend" | "web3"
@@ -31,20 +11,65 @@ interface ModeToggleProps {
 }
 
 export function ModeToggle({ mode, onModeChange }: ModeToggleProps) {
+  const toggleRef = useRef<HTMLDivElement>(null)
+  const particlesRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!toggleRef.current) return
+
+    gsap.to(toggleRef.current, {
+      scale: 1.05,
+      duration: 0.3,
+      yoyo: true,
+      repeat: 1,
+      ease: "power2.inOut",
+    })
+  }, [mode])
+
+  useEffect(() => {
+    if (!particlesRef.current) return
+
+    const particles = particlesRef.current.querySelectorAll(".toggle-particle")
+
+    particles.forEach((particle, index) => {
+      gsap.to(particle, {
+        y: "random(-20, 20)",
+        x: "random(-20, 20)",
+        duration: "random(2, 4)",
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: index * 0.1,
+      })
+    })
+  }, [])
+
   return (
     <div className="fixed top-6 right-6 z-50">
       <div className="relative">
-        {/* 3D Background */}
-        <div className="absolute inset-0 w-full h-full opacity-30 pointer-events-none">
-          <Canvas camera={{ position: [0, 0, 3] }}>
-            <ambientLight intensity={0.5} />
-            <pointLight position={[10, 10, 10]} />
-            <RotatingCube color={mode === "backend" ? "#3b82f6" : "#a855f7"} />
-          </Canvas>
+        <div
+          ref={particlesRef}
+          className="absolute inset-0 w-full h-full opacity-30 pointer-events-none overflow-visible"
+        >
+          {[...Array(8)].map((_, i) => (
+            <div
+              key={i}
+              className="toggle-particle absolute w-2 h-2 rounded-full"
+              style={{
+                background:
+                  mode === "backend"
+                    ? "radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, transparent 70%)"
+                    : "radial-gradient(circle, rgba(168, 85, 247, 0.8) 0%, transparent 70%)",
+                left: `${Math.random() * 100}%`,
+                top: `${Math.random() * 100}%`,
+                filter: "blur(1px)",
+              }}
+            />
+          ))}
         </div>
 
         {/* Toggle Container with animated background */}
-        <div className="relative glass-card rounded-full p-1.5 flex gap-2 shadow-2xl overflow-hidden">
+        <div ref={toggleRef} className="relative glass-card rounded-full p-1.5 flex gap-2 shadow-2xl overflow-hidden">
           {/* Animated sliding background */}
           <div
             className={`absolute top-1.5 bottom-1.5 rounded-full transition-all duration-500 ease-out ${

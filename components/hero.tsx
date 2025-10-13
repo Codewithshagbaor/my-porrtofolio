@@ -1,28 +1,12 @@
 "use client"
 
 import { Button } from "@/components/ui/button"
-import { ArrowRight, FileText, Code2, Blocks, Github, Linkedin, Mail } from "lucide-react"
+import { ArrowRight, FileText, Code2, Blocks, Github, Linkedin, Mail, X } from "lucide-react"
 import { ResumeModal } from "@/components/resume-modal"
-import { useState, useEffect } from "react"
-import { Canvas } from "@react-three/fiber"
-import { Float, Sphere, MeshDistortMaterial, OrbitControls } from "@react-three/drei"
-
-function AnimatedSphere({ color, position }: { color: string; position: [number, number, number] }) {
-  return (
-    <Float speed={1.5} rotationIntensity={0.5} floatIntensity={1}>
-      <Sphere args={[1, 64, 64]} position={position}>
-        <MeshDistortMaterial
-          color={color}
-          attach="material"
-          distort={0.3}
-          speed={1.5}
-          roughness={0.4}
-          metalness={0.8}
-        />
-      </Sphere>
-    </Float>
-  )
-}
+import { useState, useEffect, useRef } from "react"
+import { gsap } from "gsap"
+import PixelBlast from './PixelBlast';
+import DarkVeil from './DarkVeil';
 
 interface HeroProps {
   mode: "backend" | "web3"
@@ -32,6 +16,10 @@ export function Hero({ mode }: HeroProps) {
   const [showResume, setShowResume] = useState(false)
   const [displayedText, setDisplayedText] = useState("")
   const fullText = mode === "backend" ? "scalable systems" : "decentralized apps"
+  const heroRef = useRef<HTMLDivElement>(null)
+  const backendRef = useRef<HTMLDivElement>(null);
+  const web3Ref = useRef<HTMLDivElement>(null);
+
 
   useEffect(() => {
     let index = 0
@@ -47,37 +35,64 @@ export function Hero({ mode }: HeroProps) {
     return () => clearInterval(interval)
   }, [mode, fullText])
 
+   // GSAP fade transition between backend ↔ web3
+  useEffect(() => {
+    const backend = backendRef.current;
+    const web3 = web3Ref.current;
+    if (!backend || !web3) return;
+
+    if (mode === "backend") {
+      gsap.to(web3, { opacity: 0, duration: 0.6, ease: "power2.out" });
+      gsap.to(backend, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
+    } else if (mode === "web3") {
+      gsap.to(backend, { opacity: 0, duration: 0.6, ease: "power2.out" });
+      gsap.to(web3, { opacity: 1, duration: 0.8, ease: "power2.inOut" });
+    }
+  }, [mode]);
+
+
   const scrollToSection = (id: string) => {
     document.getElementById(id)?.scrollIntoView({ behavior: "smooth" })
   }
 
   return (
-    <section className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden">
-      <div className="absolute inset-0 opacity-30 pointer-events-none">
-        <Canvas camera={{ position: [0, 0, 8], fov: 45 }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1.5} />
-          <pointLight position={[-10, -10, -10]} intensity={0.5} color={mode === "backend" ? "#60a5fa" : "#c084fc"} />
-          <AnimatedSphere color={mode === "backend" ? "#3b82f6" : "#a855f7"} position={[-2, 1, 0]} />
-          <AnimatedSphere color={mode === "backend" ? "#0ea5e9" : "#d946ef"} position={[2, -1, -2]} />
-          <AnimatedSphere color={mode === "backend" ? "#1e40af" : "#7c3aed"} position={[0, 2, -1]} />
-          <OrbitControls enableZoom={false} enablePan={false} autoRotate autoRotateSpeed={0.5} />
-        </Canvas>
+    <section
+      ref={heroRef}
+      className="relative min-h-screen flex items-center justify-center px-6 py-20 overflow-hidden"
+    >
+{/* Backend Beams */}
+      <div
+        ref={backendRef}
+        className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+      >
+        <PixelBlast
+        variant="circle"
+        pixelSize={6}
+        color="#3b82f6"
+        patternDensity={1.2}
+        pixelSizeJitter={0.5}
+        enableRipples
+        rippleSpeed={0.4}
+        rippleThickness={0.12}
+        rippleIntensityScale={1.5}
+        liquid
+        liquidStrength={0.12}
+        liquidRadius={1.2}
+        liquidWobbleSpeed={5}
+        speed={0.6}
+        edgeFade={0.25}
+        transparent
+        patternScale={3}
+        />
       </div>
 
-      <div className="absolute inset-0 opacity-20">
-        {[...Array(30)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute w-1 h-1 bg-primary rounded-full animate-float-particle"
-            style={{
-              left: `${Math.random() * 100}%`,
-              top: `${Math.random() * 100}%`,
-              animationDelay: `${Math.random() * 5}s`,
-              animationDuration: `${5 + Math.random() * 10}s`,
-            }}
-          />
-        ))}
+      {/* Web3 FaultyTerminal */}
+      <div
+        ref={web3Ref}
+        className="absolute inset-0 opacity-0 pointer-events-none transition-opacity duration-700"
+      >
+          <DarkVeil />
+
       </div>
 
       <div className="absolute inset-0 cyber-grid opacity-40" />
@@ -119,7 +134,7 @@ export function Hero({ mode }: HeroProps) {
             that solve real problems
           </h1>
 
-          <p className="text-xl md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
+          <p className="text-xl text-white md:text-2xl text-muted-foreground max-w-3xl mx-auto font-light leading-relaxed">
             {mode === "backend"
               ? "Architecting robust APIs and microservices with Python, Django, and cloud infrastructure"
               : "Crafting smart contracts and DeFi protocols on Ethereum, Solana, and beyond"}
@@ -159,16 +174,16 @@ export function Hero({ mode }: HeroProps) {
           className="flex gap-4 justify-center items-center pt-4 animate-fade-in-up"
           style={{ animationDelay: "0.3s" }}
         >
-          <a
-            href="https://github.com"
+           <a
+            href="https://x.com/CodeShagbaor"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
           >
-            <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
+            <X className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href="https://linkedin.com"
+            href="https://linkedin.com/in/shagbaoragber/"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
@@ -176,18 +191,22 @@ export function Hero({ mode }: HeroProps) {
             <Linkedin className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href="mailto:your.email@example.com"
+            href="https://github.com/Codewithshagbaor/"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
+          >
+            <Github className="h-5 w-5 group-hover:scale-110 transition-transform" />
+          </a>
+          <a
+            href="mailto:dxtlive@gmail.com"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
           >
             <Mail className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
         </div>
 
-        <div className="absolute bottom-10 left-1/2 -translate-x-1/2 animate-bounce opacity-60">
-          <div className="w-6 h-10 border-2 border-primary/50 rounded-full flex items-start justify-center p-2 shadow-lg shadow-primary/20">
-            <div className="w-1.5 h-3 bg-primary rounded-full animate-pulse" />
-          </div>
-        </div>
+        
       </div>
 
       <ResumeModal open={showResume} onOpenChange={setShowResume} mode={mode} />

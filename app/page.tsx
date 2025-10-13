@@ -15,11 +15,13 @@ import { Achievements } from "@/components/achievements"
 export default function Home() {
   const [mode, setMode] = useState<"backend" | "web3">("backend")
   const [isTransitioning, setIsTransitioning] = useState(false)
+  const [key, setKey] = useState(0)
 
   const handleModeChange = (newMode: "backend" | "web3") => {
     setIsTransitioning(true)
     setTimeout(() => {
       setMode(newMode)
+      setKey((prev) => prev + 1)
       setTimeout(() => setIsTransitioning(false), 100)
     }, 300)
   }
@@ -32,7 +34,7 @@ export default function Home() {
     >
       <ModeToggle mode={mode} onModeChange={handleModeChange} />
 
-      <main className="relative">
+      <main className="relative" key={key}>
         <Hero mode={mode} />
         <Skills mode={mode} />
         <Projects mode={mode} />

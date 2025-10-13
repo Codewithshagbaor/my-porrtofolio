@@ -1,61 +1,57 @@
 "use client"
 
-import { Canvas } from "@react-three/fiber"
-import { Float, Text3D, Center } from "@react-three/drei"
-import { useState } from "react"
+import { useState, useEffect, useRef } from "react"
+import { gsap } from "gsap"
 
 interface SkillsProps {
   mode: "backend" | "web3"
 }
 
-function Skill3D({ text, position, color }: { text: string; position: [number, number, number]; color: string }) {
-  return (
-    <Float speed={2} rotationIntensity={0.5} floatIntensity={0.5}>
-      <Center position={position}>
-        <Text3D
-          font="/fonts/Geist_Bold.json"
-          size={0.3}
-          height={0.1}
-          curveSegments={12}
-          bevelEnabled
-          bevelThickness={0.02}
-          bevelSize={0.02}
-          bevelOffset={0}
-          bevelSegments={5}
-        >
-          {text}
-          <meshStandardMaterial color={color} emissive={color} emissiveIntensity={0.5} />
-        </Text3D>
-      </Center>
-    </Float>
-  )
-}
-
 export function Skills({ mode }: SkillsProps) {
   const backendSkills = [
-    { name: "Python", level: 95, icon: "🐍" },
-    { name: "Django", level: 90, icon: "🎸" },
-    { name: "FastAPI", level: 85, icon: "⚡" },
-    { name: "PostgreSQL", level: 88, icon: "🐘" },
-    { name: "Redis", level: 82, icon: "🔴" },
-    { name: "Docker", level: 87, icon: "🐳" },
-    { name: "AWS", level: 80, icon: "☁️" },
-    { name: "GraphQL", level: 83, icon: "📊" },
+    { name: "Python", level: 95, icon: "/icons/python.svg" },
+    { name: "Django", level: 90, icon: "/icons/django.svg" },
+    { name: "FastAPI", level: 85, icon: "/icons/fastapi.svg" },
+    { name: "PostgreSQL", level: 88, icon: "/icons/postgresql.svg" },
+    { name: "Redis", level: 82, icon: "/icons/redis.svg" },
+    { name: "Docker", level: 87, icon: "/icons/docker.svg" },
+    { name: "AWS", level: 80, icon: "/icons/aws.svg" },
+    { name: "GraphQL", level: 83, icon: "/icons/graphql.svg" },
   ]
 
   const web3Skills = [
-    { name: "Solidity", level: 92, icon: "💎" },
-    { name: "Ethereum", level: 90, icon: "Ξ" },
-    { name: "Web3.js", level: 88, icon: "🌐" },
-    { name: "Hardhat", level: 85, icon: "⛏️" },
-    { name: "IPFS", level: 80, icon: "📦" },
-    { name: "Smart Contracts", level: 93, icon: "📜" },
-    { name: "DeFi", level: 87, icon: "💰" },
-    { name: "NFTs", level: 84, icon: "🎨" },
+    { name: "Solidity", level: 92, icon: "/icons/solidity.svg" },
+    { name: "Ethereum", level: 90, icon: "/icons/ethereum.svg" },
+    { name: "Web3.js", level: 88, icon: "/icons/web3js.svg" },
+    { name: "Hardhat", level: 85, icon: "/icons/hardhat.svg" },
+    { name: "IPFS", level: 80, icon: "/icons/ipfs-dark.svg" },
+    { name: "Smart Contracts", level: 93, icon: "/icons/file-type-solidity.svg" },
+    { name: "DeFi", level: 87, icon: "/icons/defi.svg" },
+    { name: "NFTs", level: 84, icon: "/icons/nfts.svg" },
   ]
 
   const skills = mode === "backend" ? backendSkills : web3Skills
   const [hoveredSkill, setHoveredSkill] = useState<string | null>(null)
+  const floatingTextRef = useRef<HTMLDivElement>(null)
+
+  useEffect(() => {
+    if (!floatingTextRef.current) return
+
+    const texts = floatingTextRef.current.querySelectorAll(".floating-text")
+
+    texts.forEach((text, index) => {
+      gsap.to(text, {
+        y: "random(-30, 30)",
+        x: "random(-30, 30)",
+        rotation: "random(-15, 15)",
+        duration: "random(4, 6)",
+        repeat: -1,
+        yoyo: true,
+        ease: "sine.inOut",
+        delay: index * 0.3,
+      })
+    })
+  }, [mode])
 
   return (
     <section className="relative py-32 px-6 overflow-hidden">
@@ -69,34 +65,44 @@ export function Skills({ mode }: SkillsProps) {
         }`}
       />
 
-      {/* 3D Background Scene */}
-      <div className="absolute inset-0 opacity-20 pointer-events-none">
-        <Canvas camera={{ position: [0, 0, 8] }}>
-          <ambientLight intensity={0.5} />
-          <pointLight position={[10, 10, 10]} intensity={1} />
-          <Skill3D
-            text={mode === "backend" ? "API" : "WEB3"}
-            position={[-3, 2, 0]}
-            color={mode === "backend" ? "#3b82f6" : "#a855f7"}
-          />
-          <Skill3D
-            text={mode === "backend" ? "DB" : "DEFI"}
-            position={[3, -1, 0]}
-            color={mode === "backend" ? "#06b6d4" : "#ec4899"}
-          />
-          <Skill3D
-            text={mode === "backend" ? "OPS" : "NFT"}
-            position={[0, -2, -2]}
-            color={mode === "backend" ? "#0ea5e9" : "#d946ef"}
-          />
-        </Canvas>
+      <div ref={floatingTextRef} className="absolute inset-0 opacity-10 pointer-events-none overflow-hidden">
+        <div
+          className="floating-text absolute text-6xl font-bold"
+          style={{
+            left: "10%",
+            top: "20%",
+            color: mode === "backend" ? "#3b82f6" : "#a855f7",
+          }}
+        >
+          {mode === "backend" ? "API" : "WEB3"}
+        </div>
+        <div
+          className="floating-text absolute text-5xl font-bold"
+          style={{
+            right: "15%",
+            top: "40%",
+            color: mode === "backend" ? "#06b6d4" : "#ec4899",
+          }}
+        >
+          {mode === "backend" ? "DB" : "DEFI"}
+        </div>
+        <div
+          className="floating-text absolute text-7xl font-bold"
+          style={{
+            left: "50%",
+            bottom: "25%",
+            color: mode === "backend" ? "#0ea5e9" : "#d946ef",
+          }}
+        >
+          {mode === "backend" ? "OPS" : "NFT"}
+        </div>
       </div>
 
       <div className="max-w-7xl mx-auto relative z-10">
         {/* Section Header */}
         <div className="text-center mb-16">
           <h2
-            className={`text-5xl md:text-7xl font-bold mb-4 animate-glow-pulse ${
+            className={`text-5xl md:text-7xl font-bold mb-4 ${
               mode === "backend" ? "text-blue-400" : "text-purple-400"
             }`}
           >
@@ -134,10 +140,12 @@ export function Skills({ mode }: SkillsProps) {
                       : "none",
                 }}
               >
-                {/* Skill Icon */}
-                <div className="text-5xl mb-4 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12">
-                  {skill.icon}
-                </div>
+                <img
+                    src={skill.icon}
+                    className="mb-4 transition-transform duration-500 group-hover:scale-125 group-hover:rotate-12"
+                    alt={skill.name}
+                    style={{ width: "48px", height: "48px" }}
+                />
 
                 {/* Skill Name */}
                 <h3 className="text-xl font-bold mb-3 text-foreground">{skill.name}</h3>

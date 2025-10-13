@@ -9,17 +9,57 @@ interface WorkExperienceProps {
 export function WorkExperience({ mode }: WorkExperienceProps) {
   const experiences = [
     {
-      title: "Senior Backend Engineer",
-      company: "TechCorp Solutions",
-      location: "San Francisco, CA",
-      period: "2022 - Present",
+      title: "Senior Backend Developer",
+      company: "Claadme",
+      location: "Nigeria",
+      period: "08/2024 - 11/2024",
       type: "backend",
       description:
-        "Led the development of microservices architecture serving 10M+ users. Optimized API performance by 60% and reduced infrastructure costs by 40%.",
+        "Company focused on social media platform development",
       achievements: [
-        "Architected scalable REST & GraphQL APIs",
-        "Implemented Redis caching strategy",
-        "Mentored team of 5 junior engineers",
+        "Played a pivotal role in building and optimizing APIs for a cutting-edge social media platform",
+        "Enhanced performance and reliability of backend services to support a seamless user experience",
+        "Collaborated with frontend teams to ensure APIs met evolving user needs",
+        "Developed a RESTful API that improved scalability and reduced latency",
+        "Created a custom UI library that significantly increased developer productivity",
+        "Implemented CI/CD pipelines to streamline deployment processes",
+        "Mentored junior developers and conducted code reviews to ensure high code quality",
+        "Committed to writing clean, modular code"
+      ],
+    },
+    {
+      title: "Backend Developer",
+      company: "Mediconnect System Services",
+      location: "Nigeria",
+      period: "06/2023 - 04/2024",
+      type: "backend",
+      description:
+        "Company specializing in medical technology services. Led backend development for scalable web apps.",
+      achievements: [
+        "Enhanced application performance and user experience",
+        "Developed a RESTful API that improved scalability and reduced latency",
+        "Created a custom UI library that significantly increased developer productivity",
+        "Refactored legacy code and optimized database queries",
+        "Implemented CI/CD pipelines to streamline deployment processes",
+        "Mentored junior developers and conducted code reviews to ensure high code quality",
+        "Committed to writing clean, modular code"
+      ],
+    },
+    {
+      title: "Wordpress Developer",
+      company: "Better Life Nija",
+      location: "Nigeria",
+      period: "06/2022 - 12/2022",
+      type: "backend",
+      description:
+        "A company focused on creating impactful WordPress sites and web applications. Led backend development for scalable web apps.",
+      achievements: [
+        "Developed and maintained WordPress websites ensuring they were fast, secure, and user-friendly",
+        "Created custom themes and plugins to enhance functionality",
+        "Collaborated with designers and project managers to meet project timelines",
+        "Optimized website performance and SEO",
+        "Provided training and support to clients for managing their WordPress sites",
+        "Committed to writing clean, modular code"
       ],
     },
     {
@@ -37,16 +77,19 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
       ],
     },
     {
-      title: "Full Stack Engineer",
-      company: "StartupXYZ",
-      location: "New York, NY",
-      period: "2020 - 2021",
+      title: "Backend Developer",
+      company: "Ceto Data Works",
+      location: "Nigeria",
+      period: "10/2019 - 10/2021",
       type: "backend",
-      description: "Built MVP from scratch using Django and React. Scaled platform to handle 100K+ daily active users.",
+      description: "Company specializing in data solutions",
       achievements: [
-        "Designed PostgreSQL database schema",
-        "Implemented CI/CD pipelines",
-        "Integrated payment processing",
+        "Developed robust backend applications with Django focusing on security and scalability",
+        "Analyzed user needs and integrated external APIs",
+        "Designed efficient database models",
+        "Collaborated with front-end developers to enhance user experience",
+        "Optimized application performance and scalability",
+        "Ensured high code quality through automated testing and code reviews"
       ],
     },
     {
@@ -82,7 +125,7 @@ export function WorkExperience({ mode }: WorkExperienceProps) {
         {/* Section Header */}
         <div className="text-center mb-20">
           <h2
-            className={`text-5xl md:text-7xl font-bold mb-4 animate-glow-pulse ${
+            className={`text-5xl md:text-7xl font-bold mb-4 ${
               mode === "backend" ? "text-cyan-400" : "text-pink-400"
             }`}
           >
