@@ -1,0 +1,88 @@
+import { Button } from "@/components/ui/button"
+import { Card, CardContent } from "@/components/ui/card"
+import { Github, Linkedin, Twitter, Mail, Send } from "lucide-react"
+
+export function Contact() {
+  return (
+    <section id="contact" className="relative py-32 px-6 overflow-hidden">
+      <div className="absolute inset-0 bg-gradient-to-t from-background via-secondary/30 to-background" />
+      <div className="absolute inset-0 cyber-grid opacity-20" />
+      <div className="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-primary/20 rounded-full blur-[150px] animate-pulse" />
+
+      <div className="relative z-10 max-w-4xl mx-auto text-center">
+        <h2 className="text-5xl md:text-6xl font-bold mb-8">Let's Build Together</h2>
+        <p className="text-xl md:text-2xl text-muted-foreground mb-16 text-balance font-light max-w-3xl mx-auto">
+          Whether you need scalable backend systems or innovative Web3 solutions, I'm here to help bring your ideas to
+          life.
+        </p>
+
+        <Card className="relative neon-border glass-card overflow-hidden">
+          <div className="absolute inset-0 bg-gradient-to-br from-primary/10 via-transparent to-accent/10" />
+
+          <CardContent className="pt-12 pb-12 relative">
+            <div className="flex flex-col sm:flex-row gap-6 justify-center items-center mb-10">
+              <Button
+                size="lg"
+                className="group relative text-lg px-10 py-7 bg-primary hover:bg-primary/90 font-semibold overflow-hidden"
+              >
+                <span className="relative z-10 flex items-center">
+                  <Mail className="mr-2 h-5 w-5" />
+                  Get In Touch
+                  <Send className="ml-2 h-4 w-4 group-hover:translate-x-1 group-hover:-translate-y-1 transition-transform duration-300" />
+                </span>
+                <div className="absolute inset-0 bg-gradient-to-r from-primary via-primary/80 to-primary opacity-0 group-hover:opacity-100 transition-opacity" />
+              </Button>
+
+              <Button
+                size="lg"
+                variant="outline"
+                className="text-lg px-10 py-7 border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground font-semibold transition-all duration-300 bg-transparent"
+              >
+                Download Resume
+              </Button>
+            </div>
+
+            <div className="flex justify-center gap-8">
+              <a
+                href="https://github.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <Github className="h-7 w-7" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="sr-only">GitHub</span>
+              </a>
+
+              <a
+                href="https://linkedin.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <Linkedin className="h-7 w-7" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="sr-only">LinkedIn</span>
+              </a>
+
+              <a
+                href="https://twitter.com"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <Twitter className="h-7 w-7" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="sr-only">Twitter</span>
+              </a>
+            </div>
+          </CardContent>
+        </Card>
+
+        <p className="mt-16 text-sm text-muted-foreground font-light">
+          © 2025 Web3 + Backend Engineer. Built with Next.js and deployed on Vercel.
+        </p>
+      </div>
+    </section>
+  )
+}
