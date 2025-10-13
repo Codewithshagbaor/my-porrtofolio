@@ -12,9 +12,8 @@ const chakraPetch = Chakra_Petch({
 })
 
 export const metadata: Metadata = {
-  title: "Web3 + Backend Engineer Portfolio",
-  description: "Full-stack engineer specializing in scalable backends and decentralized applications",
-  generator: "v0.app",
+  title: "Shagbaor Agber Portfolio",
+  description: "Shagbaor Agber — Software Developer specializing in Django, Web3, and full-stack innovation. I build scalable digital systems that merge blockchain utility with modern web infrastructure. Explore my portfolio for projects in decentralized apps, API architecture, and intelligent backend engineering.",
 }
 
 export default function RootLayout({

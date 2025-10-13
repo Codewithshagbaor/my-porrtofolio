@@ -1,8 +1,12 @@
+import { useState } from "react"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent } from "@/components/ui/card"
-import { Github, Linkedin, Twitter, Mail, Send } from "lucide-react"
+import { Github, Linkedin, X, Mail, Send } from "lucide-react"
+import { ResumeModal } from "@/components/resume-modal"
+
 
 export function Contact() {
+  const [showResume, setShowResume] = useState(false)
   return (
     <section id="contact" className="relative py-32 px-6 overflow-hidden">
       <div className="absolute inset-0 bg-gradient-to-t from-background via-secondary/30 to-background" />
@@ -24,6 +28,7 @@ export function Contact() {
               <Button
                 size="lg"
                 className="group relative text-lg px-10 py-7 bg-primary hover:bg-primary/90 font-semibold overflow-hidden"
+                onClick={() => (window.location.href = "mailto:dxtlive@gmail.com")}
               >
                 <span className="relative z-10 flex items-center">
                   <Mail className="mr-2 h-5 w-5" />
@@ -37,14 +42,37 @@ export function Contact() {
                 size="lg"
                 variant="outline"
                 className="text-lg px-10 py-7 border-2 border-accent text-accent hover:bg-accent hover:text-accent-foreground font-semibold transition-all duration-300 bg-transparent"
+                onClick={() => setShowResume(true)}
               >
-                Download Resume
+                View Resume
               </Button>
             </div>
 
             <div className="flex justify-center gap-8">
               <a
-                href="https://github.com"
+                href="https://x.com/CodeShagbaor"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <X className="h-7 w-7" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="sr-only">X</span>
+              </a>
+
+              <a
+                href="https://linkedin.com/in/shagbaoragber/"
+                target="_blank"
+                rel="noopener noreferrer"
+                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
+              >
+                <Linkedin className="h-7 w-7" />
+                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
+                <span className="sr-only">LinkedIn</span>
+              </a>
+              
+              <a
+                href="https://github.com/Codewithshagbaor/"
                 target="_blank"
                 rel="noopener noreferrer"
                 className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
@@ -54,35 +82,17 @@ export function Contact() {
                 <span className="sr-only">GitHub</span>
               </a>
 
-              <a
-                href="https://linkedin.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <Linkedin className="h-7 w-7" />
-                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="sr-only">LinkedIn</span>
-              </a>
-
-              <a
-                href="https://twitter.com"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="group relative text-muted-foreground hover:text-primary transition-colors duration-300"
-              >
-                <Twitter className="h-7 w-7" />
-                <div className="absolute inset-0 bg-primary/20 blur-xl opacity-0 group-hover:opacity-100 transition-opacity" />
-                <span className="sr-only">Twitter</span>
-              </a>
             </div>
           </CardContent>
         </Card>
 
         <p className="mt-16 text-sm text-muted-foreground font-light">
-          © 2025 Web3 + Backend Engineer. Built with Next.js and deployed on Vercel.
+          © 2025. Built with Next.js and deployed on Vercel.
         </p>
       </div>
+
+      <ResumeModal open={showResume} onOpenChange={setShowResume} mode="backend" />
+      
     </section>
   )
 }
