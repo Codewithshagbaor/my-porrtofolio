@@ -183,7 +183,7 @@ export function Hero({ mode }: HeroProps) {
             <X className="h-5 w-5 group-hover:scale-110 transition-transform" />
           </a>
           <a
-            href=""
+            href="https://linkedin.com/in/shagbaoragber/"
             target="_blank"
             rel="noopener noreferrer"
             className="p-3 rounded-full border border-border/50 hover:border-primary/50 hover:bg-primary/10 transition-all duration-300 group"
